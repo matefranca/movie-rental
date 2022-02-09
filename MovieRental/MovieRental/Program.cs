@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace BackEnd
+namespace MovieRental
 {
     public class Program
     {
@@ -22,6 +22,5 @@ namespace BackEnd
                 {
                     webBuilder.UseStartup<Startup>();
                 });
-
     }
 }

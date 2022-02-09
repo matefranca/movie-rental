@@ -1,6 +1,7 @@
 ﻿using BackEnd.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -20,6 +21,7 @@ namespace BackEnd.Controllers
 
         public IActionResult Index()
         {
+            using (MySqlConnection con = new MySqlConnection("server=localgost;user=root;database="))
             return View();
         }
 
