@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -8,49 +7,25 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MovieRental.Data;
 using MovieRental.Model;
-using MySql.Data.MySqlClient;
 
 namespace MovieRental.Controllers
 {
-    public class ClientsController : Controller
+    public class MoviesController : Controller
     {
         private readonly MovieRentalContext _context;
 
-        public ClientsController(MovieRentalContext context)
+        public MoviesController(MovieRentalContext context)
         {
             _context = context;
         }
 
-        // GET: Clients
+        // GET: Movies
         public async Task<IActionResult> Index()
         {
-            List<Client> clients = new List<Client>(); 
-            using (MySqlConnection connection = new MySqlConnection(connectionString: "MovieRentalContext"))
-            {
-                connection.Open();
-
-                MySqlCommand command = new MySqlCommand("select * from cliente", connection);
-                MySqlDataReader reader = command.ExecuteReader();
-
-                while (reader.Read())
-                {
-                    Client client = new Client();
-                    client.ID = Convert.ToInt32(reader["id"]);
-                    client.Nome = reader["nome"].ToString();
-                    client.CPF = reader["cpf"].ToString();
-                    client.DataNascimento = Convert.ToDateTime(reader["data_nascimento"]);
-
-                    clients.Add(client);
-                }
-
-                reader.Close();
-            }
-
-
-            return View(await _context.Client.ToListAsync());
+            return View(await _context.Movie.ToListAsync());
         }
 
-        // GET: Clients/Details/5
+        // GET: Movies/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -58,39 +33,39 @@ namespace MovieRental.Controllers
                 return NotFound();
             }
 
-            var client = await _context.Client
+            var movie = await _context.Movie
                 .FirstOrDefaultAsync(m => m.ID == id);
-            if (client == null)
+            if (movie == null)
             {
                 return NotFound();
             }
 
-            return View(client);
+            return View(movie);
         }
 
-        // GET: Clients/Create
+        // GET: Movies/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Clients/Create
+        // POST: Movies/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Nome,CPF,DataNascimento")] Client client)
+        public async Task<IActionResult> Create([Bind("ID,Titulo,ClassificacaoIndicativa,Lancamento")] Movie movie)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(client);
+                _context.Add(movie);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(client);
+            return View(movie);
         }
 
-        // GET: Clients/Edit/5
+        // GET: Movies/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -98,22 +73,22 @@ namespace MovieRental.Controllers
                 return NotFound();
             }
 
-            var client = await _context.Client.FindAsync(id);
-            if (client == null)
+            var movie = await _context.Movie.FindAsync(id);
+            if (movie == null)
             {
                 return NotFound();
             }
-            return View(client);
+            return View(movie);
         }
 
-        // POST: Clients/Edit/5
+        // POST: Movies/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Nome,CPF,DataNascimento")] Client client)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,Titulo,ClassificacaoIndicativa,Lancamento")] Movie movie)
         {
-            if (id != client.ID)
+            if (id != movie.ID)
             {
                 return NotFound();
             }
@@ -122,12 +97,12 @@ namespace MovieRental.Controllers
             {
                 try
                 {
-                    _context.Update(client);
+                    _context.Update(movie);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ClientExists(client.ID))
+                    if (!MovieExists(movie.ID))
                     {
                         return NotFound();
                     }
@@ -138,10 +113,10 @@ namespace MovieRental.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(client);
+            return View(movie);
         }
 
-        // GET: Clients/Delete/5
+        // GET: Movies/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -149,30 +124,30 @@ namespace MovieRental.Controllers
                 return NotFound();
             }
 
-            var client = await _context.Client
+            var movie = await _context.Movie
                 .FirstOrDefaultAsync(m => m.ID == id);
-            if (client == null)
+            if (movie == null)
             {
                 return NotFound();
             }
 
-            return View(client);
+            return View(movie);
         }
 
-        // POST: Clients/Delete/5
+        // POST: Movies/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var client = await _context.Client.FindAsync(id);
-            _context.Client.Remove(client);
+            var movie = await _context.Movie.FindAsync(id);
+            _context.Movie.Remove(movie);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ClientExists(int id)
+        private bool MovieExists(int id)
         {
-            return _context.Client.Any(e => e.ID == id);
+            return _context.Movie.Any(e => e.ID == id);
         }
     }
 }

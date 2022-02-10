@@ -15,5 +15,9 @@ namespace MovieRental.Data
         }
 
         public DbSet<Client> Client { get; set; }
+
+        public DbSet<Movie> Movie { get; set; }
+
+        public DbSet<Rental> Rental { get; set; }
     }
 }
